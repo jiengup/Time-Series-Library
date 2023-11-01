@@ -1,6 +1,6 @@
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=6
 
-model_name=FiLM
+model_name=PatchTST
 
 python -u run.py \
   --task_name long_term_forecast \
@@ -10,8 +10,8 @@ python -u run.py \
   --model_id ECL_96_96 \
   --model $model_name \
   --data custom \
-  --features S \
-  --seq_len 192 \
+  --features M \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 96 \
   --e_layers 2 \
@@ -21,9 +21,8 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
-  --itr 1 \
-  --use_gpu true
+  --batch_size 16 \
+  --itr 1
 
 python -u run.py \
   --task_name long_term_forecast \
@@ -33,8 +32,8 @@ python -u run.py \
   --model_id ECL_96_192 \
   --model $model_name \
   --data custom \
-  --features S \
-  --seq_len 192 \
+  --features M \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 192 \
   --e_layers 2 \
@@ -44,7 +43,7 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
+  --batch_size 16 \
   --itr 1
 
 python -u run.py \
@@ -55,8 +54,8 @@ python -u run.py \
   --model_id ECL_96_336 \
   --model $model_name \
   --data custom \
-  --features S \
-  --seq_len 192 \
+  --features M \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 336 \
   --e_layers 2 \
@@ -66,7 +65,7 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
+  --batch_size 16 \
   --itr 1
 
 python -u run.py \
@@ -77,8 +76,8 @@ python -u run.py \
   --model_id ECL_96_720 \
   --model $model_name \
   --data custom \
-  --features S \
-  --seq_len 192 \
+  --features M \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 720 \
   --e_layers 2 \
@@ -88,5 +87,5 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
+  --batch_size 16 \
   --itr 1

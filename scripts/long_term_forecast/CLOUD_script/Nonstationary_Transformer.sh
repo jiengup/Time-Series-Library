@@ -1,6 +1,6 @@
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=0
 
-model_name=FiLM
+model_name=Nonstationary_Transformer
 
 python -u run.py \
   --task_name long_term_forecast \
@@ -11,7 +11,7 @@ python -u run.py \
   --model $model_name \
   --data custom \
   --features S \
-  --seq_len 192 \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 96 \
   --e_layers 2 \
@@ -21,9 +21,10 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
   --itr 1 \
-  --use_gpu true
+  --p_hidden_dims 256 256 \
+  --p_hidden_layers 2 \
+  --d_model 2048
 
 python -u run.py \
   --task_name long_term_forecast \
@@ -34,7 +35,7 @@ python -u run.py \
   --model $model_name \
   --data custom \
   --features S \
-  --seq_len 192 \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 192 \
   --e_layers 2 \
@@ -44,8 +45,10 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
-  --itr 1
+  --itr 1 \
+  --p_hidden_dims 256 256 \
+  --p_hidden_layers 2 \
+  --d_model 2048
 
 python -u run.py \
   --task_name long_term_forecast \
@@ -56,7 +59,7 @@ python -u run.py \
   --model $model_name \
   --data custom \
   --features S \
-  --seq_len 192 \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 336 \
   --e_layers 2 \
@@ -66,8 +69,10 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
-  --itr 1
+  --itr 1 \
+  --p_hidden_dims 256 256 \
+  --p_hidden_layers 2 \
+  --d_model 2048
 
 python -u run.py \
   --task_name long_term_forecast \
@@ -78,7 +83,7 @@ python -u run.py \
   --model $model_name \
   --data custom \
   --features S \
-  --seq_len 192 \
+  --seq_len 96 \
   --label_len 48 \
   --pred_len 720 \
   --e_layers 2 \
@@ -88,5 +93,7 @@ python -u run.py \
   --dec_in 321 \
   --c_out 321 \
   --des 'Exp' \
-  --batch_size 4 \
-  --itr 1
+  --itr 1 \
+  --p_hidden_dims 256 256 \
+  --p_hidden_layers 2 \
+  --d_model 2048
