@@ -12,6 +12,8 @@ class PositionalEmbedding(nn.Module):
         pe = torch.zeros(max_len, d_model).float()
         pe.require_grad = False
 
+        print(d_model)
+
         position = torch.arange(0, max_len).float().unsqueeze(1)
         div_term = (torch.arange(0, d_model, 2).float()
                     * -(math.log(10000.0) / d_model)).exp()
@@ -114,7 +116,6 @@ class TimeFeatureEmbedding(nn.Module):
     def forward(self, x):
         return self.embed(x)
 
-
 class DataEmbedding(nn.Module):
     def __init__(self, c_in, d_model, embed_type='fixed', freq='h', dropout=0.1):
         super(DataEmbedding, self).__init__()
@@ -157,7 +158,7 @@ class DataEmbedding_wo_pos(nn.Module):
         super(DataEmbedding_wo_pos, self).__init__()
 
         self.value_embedding = TokenEmbedding(c_in=c_in, d_model=d_model)
-        self.position_embedding = PositionalEmbedding(d_model=d_model)
+        # self.position_embedding = PositionalEmbedding(d_model=d_model)
         self.temporal_embedding = TemporalEmbedding(d_model=d_model, embed_type=embed_type,
                                                     freq=freq) if embed_type != 'timeF' else TimeFeatureEmbedding(
             d_model=d_model, embed_type=embed_type, freq=freq)
@@ -169,6 +170,27 @@ class DataEmbedding_wo_pos(nn.Module):
         else:
             x = self.value_embedding(x) + self.temporal_embedding(x_mark)
         return self.dropout(x)
+
+class DataEmbedding_only_time(nn.Module):
+    def __init__(self, d_model, embed_type='fixed', freq='h', dropout=0.1):
+        super(DataEmbedding_only_time, self).__init__()
+
+        #self.value_embedding = TokenEmbedding(c_in=c_in, d_model=d_model)
+        # self.position_embedding = PositionalEmbedding(d_model=d_model)
+        self.temporal_embedding = TemporalEmbedding(d_model=d_model, embed_type=embed_type,
+                                                    freq=freq) if embed_type != 'timeF' else TimeFeatureEmbedding(
+            d_model=d_model, embed_type=embed_type, freq=freq)
+        self.dropout = nn.Dropout(p=dropout)
+
+    def forward(self, x, x_mark):
+        x_enc = self.temporal_embedding(x_mark)
+        x_enc = self.dropout(x_enc)
+        x_enc = x_enc.permute(0, 2, 1).unsqueeze(3).repeat(1, 1, 1, 409)
+        return x_enc
+        # x = x.permute(3, 0, 2, 1)
+        # x = x + x_enc
+        # x = x.permute(1, 3, 2, 0)
+        # return x
 
 
 class PatchEmbedding(nn.Module):

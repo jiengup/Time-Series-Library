@@ -1,8 +1,12 @@
 import os
 import torch
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
+<<<<<<< HEAD
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM, iTransformer, \
     Koopa
+=======
+    Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM, STGCN
+>>>>>>> 9ac1aee (add STGCN MTGNN)
 
 
 class Exp_Basic(object):
@@ -24,8 +28,12 @@ class Exp_Basic(object):
             'MICN': MICN,
             'Crossformer': Crossformer,
             'FiLM': FiLM,
+<<<<<<< HEAD
             'iTransformer': iTransformer,
             'Koopa': Koopa,
+=======
+            "STGCN": STGCN,
+>>>>>>> 9ac1aee (add STGCN MTGNN)
         }
         self.device = self._acquire_device()
         self.model = self._build_model().to(self.device)

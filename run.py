@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_kernels', type=int, default=6, help='for Inception')
     parser.add_argument('--enc_in', type=int, default=7, help='encoder input size')
     parser.add_argument('--dec_in', type=int, default=7, help='decoder input size')
+    parser.add_argument('--c_in', type=int, default=1, help='input channel size')
     parser.add_argument('--c_out', type=int, default=7, help='output size')
     parser.add_argument('--d_model', type=int, default=512, help='dimension of model')
     parser.add_argument('--n_heads', type=int, default=8, help='num of heads')
@@ -94,6 +95,10 @@ if __name__ == '__main__':
                         help='hidden layer dimensions of projector (List)')
     parser.add_argument('--p_hidden_layers', type=int, default=2, help='number of hidden layers in projector')
 
+    #gnn4ts specialization
+    parser.add_argument('--n_vertex', type=int, help="num of vertex in the graph")
+    parser.add_argument('--buildA', action='store_true', help='construct graph learning layer', default=False)
+
 
     args = parser.parse_args()
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
@@ -123,7 +128,7 @@ if __name__ == '__main__':
     if args.is_training:
         for ii in range(args.itr):
             # setting record of experiments
-            setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(
+            setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_buildA{}_{}_{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,
@@ -140,6 +145,7 @@ if __name__ == '__main__':
                 args.factor,
                 args.embed,
                 args.distil,
+                args.buildA,
                 args.des, ii)
 
             exp = Exp(args)  # set experiments
@@ -151,7 +157,7 @@ if __name__ == '__main__':
             torch.cuda.empty_cache()
     else:
         ii = 0
-        setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(
+        setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_buildA{}_{}_{}'.format(
             args.task_name,
             args.model_id,
             args.model,
@@ -168,6 +174,7 @@ if __name__ == '__main__':
             args.factor,
             args.embed,
             args.distil,
+            args.buildA,
             args.des, ii)
 
         exp = Exp(args)  # set experiments
