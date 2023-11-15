@@ -35,6 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--freq', type=str, default='h',
                         help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
+    parser.add_argument('--no_scale', action="store_false", default=True, help="dont scale dataset base on train samples")
 
     # forecasting task
     parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')
@@ -97,8 +98,9 @@ if __name__ == '__main__':
 
     #gnn4ts specialization
     parser.add_argument('--n_vertex', type=int, help="num of vertex in the graph")
+    parser.add_argument('--gcn', type=int, default=1, help="whether to use graph conv network")
     parser.add_argument('--buildA', action='store_true', help='construct graph learning layer', default=False)
-
+    parser.add_argument('--predefinedA', type=str, default="", help="predefined adj matrix npy file path")
 
     args = parser.parse_args()
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False

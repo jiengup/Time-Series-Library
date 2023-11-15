@@ -183,10 +183,12 @@ class DataEmbedding_only_time(nn.Module):
         self.dropout = nn.Dropout(p=dropout)
 
     def forward(self, x, x_mark):
+        num_vertex = x.size(-1)
         x_enc = self.temporal_embedding(x_mark)
         x_enc = self.dropout(x_enc)
-        x_enc = x_enc.permute(0, 2, 1).unsqueeze(3).repeat(1, 1, 1, 409)
-        return x_enc
+        x_enc = x_enc.permute(0, 2, 1).unsqueeze(3).repeat(1, 1, 1, num_vertex)
+        x = torch.cat((x_enc, x), dim=1)
+        return x
         # x = x.permute(3, 0, 2, 1)
         # x = x + x_enc
         # x = x.permute(1, 3, 2, 0)

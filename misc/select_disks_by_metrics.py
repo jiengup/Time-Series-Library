@@ -1,13 +1,17 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import os
 
-metric_file_p = "/home/xgj/Time-Series-Library/result_long_term_forecast.txt"
-raw_dataset_p = "../dataset/tsdata_v1.npy"
-select_out_csv_p = "../dataset/clouddisk/select_disks_2.csv"
-r_select_out_csv_p = "../dataset/clouddisk/r_select_disks_2.csv"
-w_select_out_csv_p = "../dataset/clouddisk/w_select_disks_2.csv"
-select_index_out_csv_p = "../dataset/clouddisk/select_index_2.txt"
+metric_file_p = "../result_long_term_forecast_single_disk.txt"
+raw_dataset_p = "../dataset/clouddisk/tsdata_v1.npy"
+select_out_root_p = "../dataset/clouddisk/select_0.6"
+if not os.path.exists(select_out_root_p):
+    os.mkdir(select_out_root_p)
+select_out_csv_p = os.path.join(select_out_root_p, "select_disks.csv")
+r_select_out_csv_p = os.path.join(select_out_root_p, "r_select_disks.csv")
+w_select_out_csv_p = os.path.join(select_out_root_p, "w_select_disks.csv")
+select_index_out_csv_p = os.path.join(select_out_root_p, "select_index.txt")
 
 metrics = []
 
@@ -17,6 +21,7 @@ with open(metric_file_p, "r") as f:
     for idx in range(line_len):
         line = lines[idx]
         if "mse" in line:
+            print("warning: should not run into this branch")
             continue
         length = len(line)
         s = ""
@@ -42,15 +47,13 @@ with open(metric_file_p, "r") as f:
                 metrics.append({"index": num, "mse": mse, "mae": mae})
             i += 1
 
-treshold = 0.4
+treshold = 0.6
 metrics_df = pd.DataFrame(metrics)
 select_df = metrics_df[(metrics_df["mse"] <= treshold) & (metrics_df["mae"] <= treshold)]
 print("mse mean: ", select_df["mse"].mean())
 print("mse std: ", select_df["mse"].std())
 print("mae mean: ", select_df["mae"].mean())
 print("mae std: ", select_df["mae"].std())
-
-exit(0)
 
 raw_data = np.load(raw_dataset_p)
 select_data = raw_data[:, select_df["index"].to_list(), :]

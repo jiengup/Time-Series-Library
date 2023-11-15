@@ -71,15 +71,19 @@ class Model(nn.Module):
     def forecast(self, x_enc, x_mark_enc, x_dec, x_mark_dec):
         # x_enc: [batch_size, seq_len, enc_in]
         batch_size, his_len, _ = x_enc.shape
-        x_enc = x_enc.view(batch_size, -1, his_len, self.n_vertex)
+        # print(x_enc[0, :3, :10])
+        x_enc = x_enc.reshape(batch_size, his_len, self.n_vertex, -1)
+        # x_enc: [batch_size, c_in, his_len, num_vertex]
+        # print(x_enc[0, :3, :5, :])
+        x_enc = x_enc.permute(0, 3, 1, 2)
+        # print(x_enc[0, :, :3, :5])
+        
         _, c_in, _, _ = x_enc.shape
         assert c_in == self.c_in
 
+        # x: [batch_size, c_in+1, his_len, num_vertex]
         x = self.timeembedding(x_enc, x_mark_enc)
         # x: [batch_size, 1, his_len, num_vertex]
-        # x_enc: [batch_size, c_in, his_len, num_vertex]
-        x = torch.cat((x_enc, x), dim=1)
-        # x: [batch_size, c_in+1, his_len, num_vertex]
         x = self.st_blocks(x)
         if self.Ko > 0:
             x = self.output(x)
@@ -87,7 +91,12 @@ class Model(nn.Module):
             x = self.fc1(x.permute(0, 2, 3, 1))
             x = self.relu(x)
             x = self.fc2(x).permute(0, 3, 1, 2)
-        x = x.reshape(x.shape[0], self.pred_len, -1)
+        print(x.shape)
+        raise RuntimeError
+        x = x.squeeze(dim=2).transpose(1, 2)
+        x = x.reshape(x.size(0), x.size(1), self.pred_len, -1)
+        x = x.transpose(1, 2)
+        x = x.reshape(x.size(0), self.pred_len, -1)
         return x
 
     def forward(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask=None):

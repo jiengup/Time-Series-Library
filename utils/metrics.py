@@ -6,10 +6,13 @@ def RSE(pred, true):
 
 
 def CORR(pred, true):
-    u = ((true - true.mean(0)) * (pred - pred.mean(0))).sum(0)
-    d = np.sqrt(((true - true.mean(0)) ** 2 * (pred - pred.mean(0)) ** 2).sum(0))
-    return (u / d).mean(-1)
-
+    sigma_p = pred.std(axis=0)
+    sigma_g = true.std(axis=0)
+    mean_p = pred.mean(axis=0)
+    mean_g = true.mean(axis=0)
+    index = (sigma_g != 0)
+    corr = ((pred - mean_p) * (true - mean_g)).mean(axis=0) / (sigma_p * sigma_g)
+    return (corr[index]).mean()
 
 def MAE(pred, true):
     return np.mean(np.abs(pred - true))
@@ -32,10 +35,12 @@ def MSPE(pred, true):
 
 
 def metric(pred, true):
+    rse = RSE(pred, true)
+    corr = CORR(pred, true)
     mae = MAE(pred, true)
     mse = MSE(pred, true)
     rmse = RMSE(pred, true)
     mape = MAPE(pred, true)
     mspe = MSPE(pred, true)
 
-    return mae, mse, rmse, mape, mspe
+    return rse, corr, mae, mse, rmse, mape, mspe
